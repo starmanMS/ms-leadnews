@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
+    <option name="BUILD_PROCESS_ADDITIONAL_VM_OPTIONS" value="-Djps.track.ap.dependencies=false" />
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
@@ -11,15 +12,16 @@
         <module name="heima-leadnews-utils" />
         <module name="heima-leadnews-feign-api" />
         <module name="heima-leadnews-user" />
+        <module name="heima-leadnews-app-gateway" />
         <module name="heima-leadnews-common" />
         <module name="heima-leadnews-model" />
-        <module name="heima-leadnews-gateway" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="heima-leadnews" options="-parameters" />
+      <module name="heima-leadnews-app-gateway" options="-parameters" />
       <module name="heima-leadnews-common" options="-parameters" />
       <module name="heima-leadnews-feign-api" options="-parameters" />
       <module name="heima-leadnews-gateway" options="-parameters" />
