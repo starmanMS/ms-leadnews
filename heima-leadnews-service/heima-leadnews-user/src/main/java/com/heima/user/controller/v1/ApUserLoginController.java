@@ -1,6 +1,6 @@
 package com.heima.user.controller.v1;
 
-import com.heima.model.common.dtos.ResponseResult;
+import com.heima.model.common.dto.ResponseResult;
 import com.heima.model.user.dto.LoginDto;
 import com.heima.user.service.ApUserService;
 import io.swagger.annotations.Api;
