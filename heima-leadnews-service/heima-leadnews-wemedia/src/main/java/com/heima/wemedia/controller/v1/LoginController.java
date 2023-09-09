@@ -1,6 +1,6 @@
 package com.heima.wemedia.controller.v1;
 
-import com.heima.model.common.dtos.ResponseResult;
+import com.heima.model.common.dto.ResponseResult;
 import com.heima.model.wemedia.dtos.WmLoginDto;
 import com.heima.wemedia.service.WmUserService;
 import org.springframework.beans.factory.annotation.Autowired;
