@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 @RunWith(SpringRunner.class)
 public class MinIOTest {
 
+/*
     @Autowired
     private FileStorageService fileStorageService;
 
@@ -26,32 +27,36 @@ public class MinIOTest {
         String path = fileStorageService.uploadHtmlFile("", "list.html", fileInputStream);
         System.out.println(path);
     }
+*/
 
 
 
-//    public static void main(String[] args) {
-//
-//        FileInputStream fileInputStream = null;
-//        try {
-//
-//            fileInputStream =  new FileInputStream("D:\\list.html");;
-//
-//            //1.创建minio链接客户端
-//            MinioClient minioClient = MinioClient.builder().credentials("admin", "admin123").endpoint("http://154.22.117.165:9000").build();
-//            //2.上传
-//            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
-//                    .object("list.html")//文件名
-//                    .contentType("text/html")//文件类型
-//                    .bucket("leadnews")//桶名词  与minio创建的名词一致
-//                    .stream(fileInputStream, fileInputStream.available(), -1) //文件流
-//                    .build();
-//            minioClient.putObject(putObjectArgs);
-//
+    public static void main(String[] args) {
+
+        FileInputStream fileInputStream = null;
+        try {
+
+            fileInputStream =  new FileInputStream("D:\\tmp\\js\\axios.min.js");;
+
+            //1.创建minio链接客户端
+            MinioClient minioClient = MinioClient.builder()
+                    .credentials("admin", "admin123")
+                    .endpoint("http://154.22.117.165:9000")
+                    .build();
+            //2.上传
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .object("plugins/js/axios.min.js")//文件名
+                    .contentType("text/js")//文件类型
+                    .bucket("leadnews")//桶名词  与minio创建的名词一致
+                    .stream(fileInputStream, fileInputStream.available(), -1) //文件流
+                    .build();
+            minioClient.putObject(putObjectArgs);
+
 //            System.out.println("http://154.22.117.165:9000/leadnews/list.html");
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
 }
