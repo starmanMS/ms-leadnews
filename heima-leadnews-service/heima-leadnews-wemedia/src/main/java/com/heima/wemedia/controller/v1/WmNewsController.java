@@ -1,9 +1,9 @@
 package com.heima.wemedia.controller.v1;
 
 import com.heima.model.common.dto.ResponseResult;
+import com.heima.model.wemedia.dtos.WmNewsDto;
 import com.heima.model.wemedia.dtos.WmNewsPageReqDto;
 import com.heima.wemedia.service.WmNewsService;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,4 +21,10 @@ public class WmNewsController {
     public ResponseResult findList(@RequestBody WmNewsPageReqDto dto) {
         return wmNewsService.findList(dto);
     }
+
+    @PostMapping("/submit")
+    public ResponseResult submitNews(@RequestBody WmNewsDto dto) {
+        return wmNewsService.submitNews(dto);
+    }
+
 }
