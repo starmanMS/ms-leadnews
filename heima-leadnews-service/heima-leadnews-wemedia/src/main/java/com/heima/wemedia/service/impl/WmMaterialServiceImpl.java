@@ -13,6 +13,7 @@ import com.heima.model.wemedia.dtos.WmMaterialDto;
 import com.heima.model.wemedia.pojos.WmMaterial;
 import com.heima.utils.thread.WmThreadLocalUtil;
 import com.heima.wemedia.mapper.WmMaterialMapper;
+import com.heima.wemedia.mapper.WmNewsMaterialMapper;
 import com.heima.wemedia.service.WmMaterialService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
 
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private WmMaterialMapper wmMaterialMapper;
 
 
     /**
@@ -105,4 +108,31 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         return responseResult;
     }
 
+    /**
+     * 根据id删除图片
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult deletePics(Integer id) {
+        if (id == null) {
+            return new ResponseResult(501, "参数失效", null);
+        }
+        try {
+            WmMaterial picId = wmMaterialMapper.selectById(id);
+            if (picId == null) {
+                return new ResponseResult(1002, "数据不存在", null);
+            }
+
+            int rows = wmMaterialMapper.deleteById(id);
+            if (rows > 0) {
+                return new ResponseResult(200, "操作成功", null);
+            } else {
+                return new ResponseResult(501, "文件删除失败", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "文件删除失败", null);
+        }
+    }
 }
