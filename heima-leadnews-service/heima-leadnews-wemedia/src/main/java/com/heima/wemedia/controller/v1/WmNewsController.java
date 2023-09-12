@@ -29,4 +29,10 @@ public class WmNewsController {
         ResponseResult result = wmNewsService.deleteNews(id);
         return result;
     }
+
+    @PostMapping("/down_or_up")
+    public ResponseResult downOrUpNews(@RequestBody WmNewsDto newsDto) {
+        ResponseResult result = wmNewsService.downOrUpNews(newsDto);
+        return result;
+    }
 }

@@ -308,4 +308,39 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
             return new ResponseResult(501, "删除失败", null);
         }
     }
+
+    @Override
+    public ResponseResult downOrUpNews(WmNewsDto newsDto) {
+        try {
+            if (newsDto == null || newsDto.getId() == null || newsDto.getEnable() == null) {
+                return new ResponseResult(501, "文章id不可缺少", null);
+            }
+
+            Integer id = newsDto.getId();
+            Short enable = newsDto.getEnable();
+
+            WmNews news = getById(id);
+
+            if (news == null) {
+                return new ResponseResult(1002, "文章不存在", null);
+            }
+
+            // 检查用户权限，假设用户有权上下架文章
+
+            // 检查当前文章是否是发布状态
+            if (news.getStatus() != 9) {
+                return new ResponseResult(501, "当前文章不是发布状态，不能上下架", null);
+            }
+
+            // 更新文章的上下架状态
+            news.setEnable(enable);
+            updateById(news);
+
+            // 更新成功，返回操作成功的响应
+            return new ResponseResult(200, "操作成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "操作失败", null);
+        }
+    }
 }
