@@ -37,6 +37,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
 
     /**
      * 图片上传
+     *
      * @param multipartFile
      * @return
      */
@@ -44,7 +45,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
     public ResponseResult uploadPicture(MultipartFile multipartFile) {
 
         //1.检查参数
-        if(multipartFile == null || multipartFile.getSize() == 0){
+        if (multipartFile == null || multipartFile.getSize() == 0) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID);
         }
 
@@ -56,7 +57,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         String fileId = null;
         try {
             fileId = fileStorageService.uploadImgFile("", fileName + postfix, multipartFile.getInputStream());
-            log.info("上传图片到MinIO中，fileId:{}",fileId);
+            log.info("上传图片到MinIO中，fileId:{}", fileId);
         } catch (IOException e) {
             e.printStackTrace();
             log.error("WmMaterialServiceImpl-上传文件失败");
@@ -66,8 +67,8 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         WmMaterial wmMaterial = new WmMaterial();
         wmMaterial.setUserId(WmThreadLocalUtil.getUser().getId());
         wmMaterial.setUrl(fileId);
-        wmMaterial.setIsCollection((short)0);
-        wmMaterial.setType((short)0);
+        wmMaterial.setIsCollection((short) 0);
+        wmMaterial.setType((short) 0);
         wmMaterial.setCreatedTime(new Date());
         save(wmMaterial);
 
@@ -77,6 +78,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
 
     /**
      * 素材列表查询
+     *
      * @param dto
      * @return
      */
@@ -110,6 +112,7 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
 
     /**
      * 根据id删除图片
+     *
      * @param id
      * @return
      */
@@ -133,6 +136,71 @@ public class WmMaterialServiceImpl extends ServiceImpl<WmMaterialMapper, WmMater
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult(501, "文件删除失败", null);
+        }
+    }
+
+    /**
+     * 取消收藏
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult cancelCollect(Integer id) {
+        try {
+            if (id == null) {
+                return new ResponseResult(501, "参数失效", null);
+            }
+
+            WmMaterial material = getById(id);
+
+            if (material == null) {
+                return new ResponseResult(501, "参数失效", null);
+            }
+
+            // 检查用户权限，假设用户有权取消收藏该素材
+
+            // 设置素材的收藏状态为未收藏
+            material.setIsCollection((short) 0);
+            updateById(material);
+
+            // 取消收藏成功，返回操作成功的响应
+            return new ResponseResult(200, "操作成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "参数失效", null);
+        }
+    }
+
+    /**
+     * 收藏
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult collect(Integer id) {
+        try {
+            if (id == null) {
+                return new ResponseResult(501, "参数失效", null);
+            }
+
+            WmMaterial material = getById(id);
+
+            if (material == null) {
+                return new ResponseResult(501, "参数失效", null);
+            }
+
+            // 检查用户权限，假设用户有权收藏该素材
+
+            // 设置素材的收藏状态为已收藏
+            material.setIsCollection((short) 1);
+            updateById(material);
+
+            // 收藏成功，返回操作成功的响应
+            return new ResponseResult(200, "操作成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "参数失效", null);
         }
     }
 }
