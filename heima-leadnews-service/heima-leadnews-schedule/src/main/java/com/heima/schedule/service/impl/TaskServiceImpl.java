@@ -21,6 +21,16 @@ import java.util.Date;
 @Transactional
 @Slf4j
 public class TaskServiceImpl implements TaskService {
+
+    @Autowired
+    private CacheService cacheService;
+
+    @Autowired
+    private TaskinfoMapper taskinfoMapper;
+
+    @Autowired
+    private TaskinfoLogsMapper taskinfoLogsMapper;
+
     /**
      * 添加延迟任务
      *
@@ -42,8 +52,6 @@ public class TaskServiceImpl implements TaskService {
         return task.getTaskId();
     }
 
-    @Autowired
-    private CacheService cacheService;
 
     /**
      * 把任务添加到redis中
@@ -69,12 +77,6 @@ public class TaskServiceImpl implements TaskService {
 
 
     }
-
-    @Autowired
-    private TaskinfoMapper taskinfoMapper;
-
-    @Autowired
-    private TaskinfoLogsMapper taskinfoLogsMapper;
 
     /**
      * 添加任务到数据库中
@@ -109,5 +111,64 @@ public class TaskServiceImpl implements TaskService {
         }
 
         return flag;
+    }
+
+    /**
+     * 取消任务
+     * @param taskId
+     * @return
+     */
+    @Override
+    public boolean cancelTask(long taskId) {
+        boolean flag = false;
+
+        // 删除任务，更新任务日志
+        Task task = updateDb(taskId, ScheduleConstants.CANCELLED);
+
+        // 删除redis的数据
+        if (task != null) {
+            removeTaskFromCache(task);
+            flag = true;
+        }
+        return flag;
+    }
+
+    /**
+     * 删除redis中的数据
+     * @param task
+     */
+    private void removeTaskFromCache(Task task) {
+        String key = task.getTaskType() + "_" + task.getPriority();
+        if (task.getExecuteTime() <= System.currentTimeMillis()) {
+            cacheService.lRemove(ScheduleConstants.TOPIC + key, 0, JSON.toJSONString(task));
+        } else {
+            cacheService.zRemove(ScheduleConstants.FUTURE + key, JSON.toJSONString(task));
+        }
+    }
+
+    /**
+     * 删除任务，更新任务日志
+     * @param taskId
+     * @param status
+     * @return
+     */
+    private Task updateDb(long taskId, int status) {
+        Task task = null;
+        try {
+            //删除任务
+            taskinfoMapper.deleteById(taskId);
+
+            //更新任务日志
+            TaskinfoLogs taskinfoLogs = taskinfoLogsMapper.selectById(taskId);
+            taskinfoLogs.setStatus(status);
+            taskinfoLogsMapper.updateById(taskinfoLogs);
+
+            task = new Task();
+            BeanUtils.copyProperties(taskinfoLogs, task);
+            task.setExecuteTime(taskinfoLogs.getExecuteTime().getTime());
+        } catch (Exception e) {
+            log.error("task cancel exception taskId={}", taskId);
+        }
+        return task;
     }
 }
