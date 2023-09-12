@@ -1,6 +1,7 @@
 package com.heima.schedule.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.heima.common.constants.ScheduleConstants;
 import com.heima.common.redis.CacheService;
 import com.heima.model.schedule.dtos.Task;
@@ -16,8 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -209,7 +213,7 @@ public class TaskServiceImpl implements TaskService {
     @Scheduled(cron = "0 */1 * * * ?")
     public void refresh() {
 
-        String token = cacheService.tryLock("FUTURE_TASJ_SYNC", 1000 * 30);
+        String token = cacheService.tryLock("FUTURE_TASK_SYNC", 1000 * 30);
 
         if (StringUtils.isNotBlank(token)) {
             log.info("未来数据定时刷新---定时任务");
@@ -231,5 +235,33 @@ public class TaskServiceImpl implements TaskService {
                 }
             }
         }
+    }
+
+    @Scheduled(cron = "0 */5 * * * ?")
+    @PostConstruct
+    public void reloadData() {
+        clearCache();
+        log.info("数据库数据同步到缓存");
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MINUTE, 5);
+
+        //查看小于未来5分钟的所有任务
+        List<Taskinfo> allTasks = taskinfoMapper.selectList(Wrappers.<Taskinfo>lambdaQuery().lt(Taskinfo::getExecuteTime,calendar.getTime()));
+        if(allTasks != null && !allTasks.isEmpty()){
+            for (Taskinfo taskinfo : allTasks) {
+                Task task = new Task();
+                BeanUtils.copyProperties(taskinfo,task);
+                task.setExecuteTime(taskinfo.getExecuteTime().getTime());
+                addTaskToCache(task);
+            }
+        }
+    }
+
+    private void clearCache(){
+        // 删除缓存中未来数据集合和当前消费者队列的所有key
+        Set<String> futurekeys = cacheService.scan(ScheduleConstants.FUTURE + "*");// future_
+        Set<String> topickeys = cacheService.scan(ScheduleConstants.TOPIC + "*");// topic_
+        cacheService.delete(futurekeys);
+        cacheService.delete(topickeys);
     }
 }
