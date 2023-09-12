@@ -46,6 +46,9 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
     @Autowired
     private WmMaterialMapper wmMaterialMapper;
 
+    @Autowired
+    private WmNewsMapper wmNewsMapper;
+
     /**
      * 查询文章
      * @param dto
@@ -263,6 +266,46 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
             //删除文章图片与素材的关系
             wmNewsMaterialMapper.delete(Wrappers.<WmNewsMaterial>lambdaQuery().eq(WmNewsMaterial::getNewsId, wmNews.getId()));
             updateById(wmNews);
+        }
+    }
+
+    /**
+     * 根据id删除文章
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult deleteNews(Integer id) {
+        try {
+            if (id == null) {
+                return new ResponseResult(501, "文章id不可缺少", null);
+            }
+
+            WmNews news = getById(id);
+
+            if (news == null) {
+                return new ResponseResult(1002, "文章不存在", null);
+            }
+
+            // 检查用户权限，假设用户有权删除文章
+
+            // 检查文章是否已发布，如果已发布则不能删除
+            if (news.getStatus() == 9) {
+                return new ResponseResult(501, "文章已发布，不能删除", null);
+            }
+
+            // 执行删除操作
+            int deletedRows = wmNewsMapper.deleteById(id);
+
+            if (deletedRows > 0) {
+                // 删除成功，返回操作成功的响应
+                return new ResponseResult(200, "操作成功", null);
+            } else {
+                return new ResponseResult(501, "删除失败", null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "删除失败", null);
         }
     }
 }

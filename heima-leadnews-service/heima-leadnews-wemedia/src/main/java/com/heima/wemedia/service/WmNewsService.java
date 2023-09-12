@@ -23,4 +23,11 @@ public interface WmNewsService extends IService<WmNews> {
      */
     public ResponseResult submitNews(WmNewsDto dto);
 
+    /**
+     * 根据id删除文章
+     * @param id
+     * @return
+     */
+    public  ResponseResult deleteNews(Integer id);
+
 }
