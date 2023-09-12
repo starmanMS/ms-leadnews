@@ -24,21 +24,18 @@ import com.heima.wemedia.mapper.WmNewsMaterialMapper;
 import com.heima.wemedia.service.WmNewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @Transactional
 public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implements WmNewsService {
+    private final String HOST = "154.22.117.165:9000";
 
     @Autowired
     private WmNewsMaterialMapper wmNewsMaterialMapper;
@@ -338,6 +335,43 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
 
             // 更新成功，返回操作成功的响应
             return new ResponseResult(200, "操作成功", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseResult(501, "操作失败", null);
+        }
+    }
+
+
+    /**
+     * 查看文章详情
+     * @param id
+     * @return
+     */
+    @Override
+    public ResponseResult getNewsDetails(Integer id) {
+
+        try {
+            if (id == null) {
+                return new ResponseResult(501, "文章id不可缺少", null);
+            }
+
+            WmNews news = getById(id);
+
+            if (news == null) {
+                return new ResponseResult(1002, "文章不存在", null);
+            }
+
+            // 组装文章的详细信息并放入一个 Map 中
+            Map<String, Object> newsDetails = new HashMap<>();
+            newsDetails.put("host", HOST);
+            newsDetails.put("id", news.getId());
+            newsDetails.put("userId", news.getUserId());
+            newsDetails.put("title", news.getTitle());
+            newsDetails.put("publishTime", news.getPublishTime());
+            newsDetails.put("images", news.getImages());
+
+            // 返回操作成功的响应
+            return new ResponseResult(200, "操作成功", newsDetails);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseResult(501, "操作失败", null);

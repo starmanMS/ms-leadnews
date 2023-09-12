@@ -35,4 +35,10 @@ public class WmNewsController {
         ResponseResult result = wmNewsService.downOrUpNews(newsDto);
         return result;
     }
+
+    @GetMapping("/one/{id}")
+    public ResponseResult getNewsDetails(@PathVariable Integer id) {
+        ResponseResult result = wmNewsService.getNewsDetails(id);
+        return result;
+    }
 }
