@@ -8,6 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MinIOApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MinIOApplication.class,args);
+        SpringApplication.run(MinIOApplication.class, args);
     }
 }

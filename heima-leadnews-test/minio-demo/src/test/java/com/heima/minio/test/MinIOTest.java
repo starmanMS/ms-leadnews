@@ -1,5 +1,6 @@
 package com.heima.minio.test;
 
+import com.heima.file.config.MinIOConfigProperties;
 import com.heima.file.service.FileStorageService;
 import com.heima.minio.MinIOApplication;
 import io.minio.MinioClient;
@@ -17,6 +18,9 @@ import java.io.FileNotFoundException;
 @RunWith(SpringRunner.class)
 public class MinIOTest {
 
+    @Autowired
+    private MinIOConfigProperties minIOConfigProperties;
+
 /*
     @Autowired
     private FileStorageService fileStorageService;
@@ -33,7 +37,10 @@ public class MinIOTest {
 
     public static void main(String[] args) {
 
-        FileInputStream fileInputStream = null;
+
+
+
+       /* FileInputStream fileInputStream = null;
         try {
 
             fileInputStream =  new FileInputStream("D:\\tmp\\js\\axios.min.js");;
@@ -56,7 +63,16 @@ public class MinIOTest {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
+        }*/
     }
 
+
+    @Test
+    public void outputInfo() {
+        System.out.println("Access Key: " + minIOConfigProperties.getAccessKey());
+        System.out.println("Secret Key: " + minIOConfigProperties.getSecretKey());
+        System.out.println("Endpoint: " + minIOConfigProperties.getEndpoint());
+        System.out.println("Bucket: " + minIOConfigProperties.getBucket());
+
+    }
 }

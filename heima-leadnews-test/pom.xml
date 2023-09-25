@@ -11,6 +11,8 @@
     <modules>
         <module>freemarker-demo</module>
         <module>minio-demo</module>
+        <module>kafka-demo</module>
+        <module>es-init</module>
     </modules>
     <modelVersion>4.0.0</modelVersion>
 
@@ -23,11 +25,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>7.1.0</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

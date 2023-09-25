@@ -186,7 +186,7 @@ public class TaskServiceImpl implements TaskService {
      * @return
      */
     @Override
-    public Task pull(int type, int priority) {
+    public Task poll(int type, int priority) {
         Task task = null;
 
         try {

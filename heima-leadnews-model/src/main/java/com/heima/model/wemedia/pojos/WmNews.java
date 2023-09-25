@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import org.apache.ibatis.type.Alias;
-
 import java.io.Serializable;
 import java.util.Date;
 

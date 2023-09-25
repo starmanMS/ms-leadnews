@@ -44,4 +44,6 @@ public interface WmNewsService extends IService<WmNews> {
      */
     public ResponseResult getNewsDetails(Integer id);
 
+
+
 }
