@@ -1,0 +1,8 @@
+server:
+  port: 9998
+spring:
+  data:
+    mongodb:
+      host: 154.22.117.165
+      port: 27017
+      database: leadnews-history

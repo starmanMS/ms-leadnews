@@ -12,6 +12,6 @@ public interface ArticleSearchService {
      * @param dto
      * @return
      */
-    public ResponseResult articleSearch(UserSearchDto dto) throws IOException;
+    public ResponseResult search(UserSearchDto dto) throws IOException;
 
 }

@@ -9,6 +9,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import javax.annotation.Resource;
+
 
 @Data
 @Configuration
@@ -17,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(FileStorageService.class)
 public class MinIOConfig {
 
-    @Autowired
+    @Resource
     private MinIOConfigProperties minIOConfigProperties;
 
     @Bean

@@ -3,4 +3,3 @@ minio:
   secretKey: admin123
   bucket: leadnews
   endpoint: http://154.22.117.165:9000
-  readPath: http://154.22.117.165:9000

@@ -38,6 +38,5 @@ public class SyncArticleListener {
                 log.error("sync es error={}", e);
             }
         }
-
     }
 }
